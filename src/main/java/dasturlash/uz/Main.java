@@ -7,19 +7,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Main {
     public static void main(String[] args) {
-        Hibernate
-                asfdsa
-                fds
-                        af
-                        sa
-                                f
-                                s
-                                        fs
-                                        f
-                                                as
-
-                                                f
-                                                        s
 
         ApplicationContext context=new ClassPathXmlApplicationContext("spring-core.xml");
         MainController mainController = context.getBean("mainController", MainController.class);

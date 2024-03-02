@@ -18,24 +18,19 @@ public class BookService {
 
 
 
-    public void add(Book book) {
+    public void add(int categoryId,Book book) {
        if (!isValid(book)){
            return;
        }
-        Category category=categoryRepository.getByIdSpring(book.getCategoryId());
+        Category category=categoryRepository.getByIdSpring(categoryId);
          if(category==null){
              System.out.println("Category not found");
              return;
          }
-         book.setCreatedDate(LocalDateTime.now());
+         book.setCategory(category);
          book.setVisible(true);
-        int effectedRow = bookRepository.saveSpring(book);
-        if (effectedRow==1){
-            System.out.println("Book saved.");
-        }else {
-            System.out.println("Book not saved");
-        }
-
+        bookRepository.saveSpring(book);
+        System.out.println("Book saved.");
     }
 
     public boolean isValid(Book book){
@@ -57,13 +52,13 @@ public class BookService {
     public void all(){
         List<Book> bookList=bookRepository.getAllSpring();
         bookList.forEach(book -> {
-            System.out.println(book.getId()+","+book.getTitle()+","+book.getAuthor()+","+book.getCategoryName());
+            System.out.println(book.getId()+","+book.getTitle()+","+book.getAuthor()+","+book.getCategory().getName());
         });
     }
     public void search(String query){
         List<Book> bookList=bookRepository.searchSpring(query);
         bookList.forEach(book -> {
-            System.out.println(book.getId()+","+book.getTitle()+","+book.getAuthor()+","+book.getCategoryName());
+            System.out.println(book.getId()+","+book.getTitle()+","+book.getAuthor()+","+book.getCategory().getName());
         });
     }
 
@@ -79,7 +74,7 @@ public class BookService {
     public void byCategoryId(int categoryId) {
         List<Book> bookList=bookRepository.getAllByCategoryIdSpring(categoryId);
         bookList.forEach(book -> {
-            System.out.println(book.getId()+","+book.getTitle()+","+book.getAuthor()+","+book.getCategoryName());
+            System.out.println(book.getId()+","+book.getTitle()+","+book.getAuthor()+","+book.getCategory().getName());
         });
     }
     @Autowired

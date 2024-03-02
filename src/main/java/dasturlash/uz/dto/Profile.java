@@ -2,31 +2,35 @@ package dasturlash.uz.dto;
 
 import dasturlash.uz.enums.ProfileRoles;
 import dasturlash.uz.enums.ProfileStatus;
+import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-
-public class Profile {
-    private Integer id;
+@Entity
+@Table(name = "profile_table")
+public class Profile extends BaseEntity{
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
+    @Column(name = "login",unique = true)
     private String login;
+    @Column(name = "password")
     private String password;
+    @Column(name = "phone")
     private String phone;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
     private ProfileStatus status;
+    @Column(name = "roles")
+    @Enumerated(value = EnumType.STRING)
     private ProfileRoles roles;
-    private LocalDateTime createdDate;
 
     public String getFild() {
-        return id + " " + name + " " + surname + " " + login + " " + phone + " " + status + " " + roles + " " + createdDate;
+        return getId() + " " + name + " " + surname + " " + login + " " + phone + " " + status + " " + roles + " " + getCreatedDate();
     }
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -84,11 +88,4 @@ public class Profile {
         this.roles = roles;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return this.createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
 }

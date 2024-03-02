@@ -1,14 +1,12 @@
 package dasturlash.uz.controller;
 
 import dasturlash.uz.dto.Profile;
-import dasturlash.uz.repository.TableRepository;
 import dasturlash.uz.sevice.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class MainController {
-    private TableRepository tableRepository;
     private  InitServes initServes;
     private BookService bookService;
     private AuthService authServes;
@@ -16,7 +14,6 @@ public class MainController {
     private ScannerService scannerService;
 
     public void start() {
-        tableRepository.createTables();
         initServes.initAmin();
         initServes.initTestStudent();
         boolean b = true;
@@ -116,8 +113,7 @@ public class MainController {
     }
 
     @Autowired
-    public MainController(TableRepository tableRepository, InitServes initServes, BookService bookService, AuthService authServes, CategoryService categoryService, ScannerService scannerService) {
-        this.tableRepository = tableRepository;
+    public MainController( InitServes initServes, BookService bookService, AuthService authServes, CategoryService categoryService, ScannerService scannerService) {
         this.initServes = initServes;
         this.bookService = bookService;
         this.authServes = authServes;

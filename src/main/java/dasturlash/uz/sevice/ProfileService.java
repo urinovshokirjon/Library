@@ -28,7 +28,6 @@ public class ProfileService {
             return;
         }
 
-        profile.setCreatedDate(LocalDateTime.now());
         profile.setStatus(ProfileStatus.ACTIVE);
         profile.setPassword(MD5Util.encode(profile.getPassword().trim()));
         int effectedRow = profileRepository.createSpring(profile);

@@ -2,83 +2,42 @@ package dasturlash.uz.dto;
 
 import dasturlash.uz.enums.StudentBookStatus;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-public class StudentBook {
-    private Integer id;
-    private Integer studentId;
-    private Integer bookId;
+@Entity
+@Table(name = "student_book_table")
+public class StudentBook extends BaseEntity{
+    @ManyToOne
     private Book book;
+    @ManyToOne
     private Profile student;
+    @ManyToOne
     private Category category;
-    private LocalDateTime createdDate;
+    @Column(name = "deadline_date")
     private LocalDate deadlineDate;
+    @Column(name = "return_date")
     private LocalDateTime returnedDate;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
     private StudentBookStatus status;
+    @Column(name = "taken_count")
     private int takenCount;
 
-    public int getTakenCount() {
-        return takenCount;
-    }
-
-    public void setTakenCount(int takenCount) {
-        this.takenCount = takenCount;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
-    }
-
-    public Integer getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Integer bookId) {
-        this.bookId = bookId;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getReturnedDate() {
-        return returnedDate;
-    }
-
-    public void setReturnedDate(LocalDateTime returnedDate) {
-        this.returnedDate = returnedDate;
-    }
-
-    public StudentBookStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(StudentBookStatus status) {
-        this.status = status;
-    }
     public Book getBook() {
         return book;
     }
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public Profile getStudent() {
+        return student;
+    }
+
+    public void setStudent(Profile student) {
+        this.student = student;
     }
 
     public Category getCategory() {
@@ -97,11 +56,27 @@ public class StudentBook {
         this.deadlineDate = deadlineDate;
     }
 
-    public Profile getStudent() {
-        return student;
+    public LocalDateTime getReturnedDate() {
+        return returnedDate;
     }
 
-    public void setStudent(Profile student) {
-        this.student = student;
+    public void setReturnedDate(LocalDateTime returnedDate) {
+        this.returnedDate = returnedDate;
+    }
+
+    public StudentBookStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(StudentBookStatus status) {
+        this.status = status;
+    }
+
+    public int getTakenCount() {
+        return takenCount;
+    }
+
+    public void setTakenCount(int takenCount) {
+        this.takenCount = takenCount;
     }
 }

@@ -92,11 +92,10 @@ public class BookController {
         Book book=new Book();
         book.setTitle(title);
         book.setAuthor(author);
-        book.setCategoryId(categoryId);
         book.setAvailableDay(availableDay);
         book.setPublishDate(LocalDate.parse(publishDate));
 
-       bookService.add(book);
+       bookService.add(categoryId,book);
     }
     private void list() {
         System.out.println("---- Book list ----");

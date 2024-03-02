@@ -1,34 +1,26 @@
 package dasturlash.uz.dto;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-public class Book {
-    private Integer id;
+@Entity
+@Table(name = "book_table")
+public class Book extends BaseEntity {
+    @Column(name = "title")
     private String title;
+    @Column(name = "author")
     private String author;
-    private Integer categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+    @Column(name = "publish_date")
     private LocalDate publishDate;
+    @Column(name = "available_day")
     private Integer availableDay;
+    @Column(name = "visible")
     private Boolean visible;
-    private LocalDateTime createdDate;
-    private String categoryName;
 
-    public String getCategoryName() {
-        return categoryName;
-    }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -46,12 +38,12 @@ public class Book {
         this.author = author;
     }
 
-    public Integer getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public LocalDate getPublishDate() {
@@ -76,13 +68,5 @@ public class Book {
 
     public void setVisible(Boolean visible) {
         this.visible = visible;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 }

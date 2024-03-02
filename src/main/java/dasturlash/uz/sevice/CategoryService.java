@@ -24,7 +24,6 @@ public void create(Category category){
         System.out.println("Bunday Category oldindan mavjud!!!");
         return;
     }
-    category.setCreateDate(LocalDateTime.now());
     category.setVisible(true);
     int effectedRow = categoryRepository.saveSpring(category);
     if (effectedRow !=0){
@@ -43,7 +42,7 @@ public boolean  check(Category category){
     public void list() {
         List<Category> categoryList = categoryRepository.getAllSpring();
         for (Category category: categoryList){
-            System.out.println(category.getId()+" "+category.getName()+" "+category.getCreateDate());
+            System.out.println(category.getId()+" "+category.getName()+" "+category.getCreatedDate());
         }
     }
 

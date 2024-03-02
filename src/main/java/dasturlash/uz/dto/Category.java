@@ -1,11 +1,15 @@
 package dasturlash.uz.dto;
 
-import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
 
-public class Category {
-    private Integer id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+@Entity
+@Table(name = "category_table")
+public class Category extends BaseEntity{
+    @Column(name = "name")
     private String name;
-    private LocalDateTime createDate;
+    @Column(name = "visible")
     private boolean visible;
 
     public boolean isVisible() {
@@ -16,13 +20,6 @@ public class Category {
         this.visible = visible;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -32,11 +29,4 @@ public class Category {
         this.name = name;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
 }

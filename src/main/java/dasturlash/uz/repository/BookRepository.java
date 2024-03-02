@@ -2,6 +2,10 @@ package dasturlash.uz.repository;
 
 import dasturlash.uz.dto.Book;
 import dasturlash.uz.dto.Category;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,180 +18,55 @@ import java.util.List;
 @Repository
 public class BookRepository {
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private SessionFactory  sessionFactory;
 
-    public int save(Book book){
-        Connection connection=ConnectionRepository.getConnection();
-        try {
-            String sql="INSERT INTO book(title,author,category_id,publish_date,available_day,created_date,visible)" +
-                    " VALUES (?,?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, book.getTitle());
-            preparedStatement.setString(2, book.getAuthor());
-            preparedStatement.setInt(3,book.getCategoryId());
-            preparedStatement.setDate(4, Date.valueOf(book.getPublishDate()));
-            preparedStatement.setInt(5,book.getAvailableDay());
-            preparedStatement.setTimestamp(6, Timestamp.valueOf(book.getCreatedDate()));
-            preparedStatement.setBoolean(7,book.getVisible());
-
-            int effectodRow = preparedStatement.executeUpdate();
-            return effectodRow;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return 0;
-
-    }
     public int saveSpring(Book book){
-        String sql="INSERT INTO book(title,author,category_id,publish_date,available_day,created_date,visible)" +
-                " VALUES (?,?,?,?,?,?,?)";
-        int effectedRow = jdbcTemplate.update(sql, book.getTitle(), book.getAuthor(), book.getCategoryId(), book.getPublishDate(), book.getAvailableDay(), book.getCreatedDate(), book.getVisible());
-        return effectedRow;
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        session.save(book);
+        transaction.commit();
+        session.close();
+        return book.getId();
     }
 
-    public List<Book> getAll() {
-        Connection connection = ConnectionRepository.getConnection();
-        List<Book> bookList = new LinkedList<>();
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT b.id,b.title,b.author,b.publish_date,b.available_day,b.created_date,c.name as category_name FROM book as b " +
-                    " inner join category as c on c.id=b.category_id where b.visible=true order by b.id asc");
-            while (resultSet.next()) {
-                Book book = new Book();
-                book.setId(resultSet.getInt("id"));
-                book.setTitle(resultSet.getString("title"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setPublishDate(resultSet.getDate("publish_date").toLocalDate());
-                book.setAvailableDay(resultSet.getInt("available_day"));
-                book.setCreatedDate(resultSet.getTimestamp("created_date").toLocalDateTime());
-                book.setCategoryName(resultSet.getString("category_name"));
-                bookList.add(book);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return bookList;
-    }
     public List<Book> getAllSpring() {
-        String sql="SELECT b.id,b.title,b.author,b.publish_date,b.available_day,b.created_date,c.name as category_name FROM book as b " +
-                " inner join category as c on c.id=b.category_id where b.visible=true order by b.id asc";
-        List<Book> bookList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Book.class));
+        Session session = sessionFactory.openSession();
+        String sql="From Book b where b.visible=true";
+        Query query = session.createQuery(sql);
+        List<Book> bookList = query.list();
+        session.close();
         return bookList;
     }
-    public List<Book> search(String query) {
-        Connection connection = ConnectionRepository.getConnection();
-        List<Book> bookList = new LinkedList<>();
-        try {
-            String sql="SELECT b.*,c.name as category_name FROM book as b" +
-                    " inner join category as c on c.id=b.category_id" +
-                    " where lower (title) like ? or lower(author) like ? and b.visible=true" +
-                    " order by b.id asc";
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            String title="%"+query.toLowerCase()+"%";
-            preparedStatement.setString(1,title);
-            preparedStatement.setString(2,title);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Book book = new Book();
-                book.setId(resultSet.getInt("id"));
-                book.setTitle(resultSet.getString("title"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setPublishDate(resultSet.getDate("publish_date").toLocalDate());
-                book.setAvailableDay(resultSet.getInt("available_day"));
-                book.setCreatedDate(resultSet.getTimestamp("created_date").toLocalDateTime());
-                book.setCategoryName(resultSet.getString("category_name"));
-                bookList.add(book);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return bookList;
-    }
     public List<Book> searchSpring(String query) {
-        String sql="SELECT b.*,c.name as category_name FROM book as b" +
-                " inner join category as c on c.id=b.category_id" +
-                " where lower (title) like ? or lower(author) like ? and b.visible=true" +
-                " order by b.id asc";
+        Session session = sessionFactory.openSession();
         String title="%"+query.toLowerCase()+"%";
-        List<Book> bookList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Book.class), title,title);
+        Query<Book> query1 = session.createQuery("From Book b where lower(b.title) like :query or lower(b.author) like :query and b.visible=true");
+        query1.setParameter("query",title);
+        List<Book> bookList = query1.list();
+        session.close();
         return bookList;
     }
 
-    public int delete(int bookId) {
-        Connection connection= ConnectionRepository.getConnection();
-        try {
-            Statement statement = connection.createStatement();
-            return statement.executeUpdate("update book set visible=false where id=" + bookId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return 0;
-    }
-    public int deleteSpring(int bookId) {
-        String sql="update book set visible=false where id=" + bookId;
-        return jdbcTemplate.update(sql);
+    public int deleteSpring(int id) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("Update Book b set b.visible=false where id=:id");
+        query.setParameter("id",id);
+        int n = query.executeUpdate();
+        transaction.commit();
+        session.close();
+        return n;
     }
 
-    public Book getBookById(Integer id){
-        // Bu metod shudan id book bor yo'qligini aniqlaydi;
 
-        Connection connection= ConnectionRepository.getConnection();
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM book WHERE id=?");
-            preparedStatement.setInt(1,id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-             if (resultSet.next()) {
-                Book book = new Book();
-                book.setId(resultSet.getInt("id"));
-                book.setTitle(resultSet.getString("title"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setPublishDate(resultSet.getDate("publish_date").toLocalDate());
-                book.setAvailableDay(resultSet.getInt("available_day"));
-                book.setCreatedDate(resultSet.getTimestamp("created_date").toLocalDateTime());
-                book.setCategoryId(resultSet.getInt("category_id"));
-                return book;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
     public Book getBookByIdSpring(Integer id){
         // Bu metod shudan id book bor yo'qligini aniqlaydi;
-        String sql="SELECT * FROM book WHERE id=?";
-        List<Book> bookList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Book.class), id);
-        if(bookList.size()>0){
+        Session session = sessionFactory.openSession();
+        Query<Book> query = session.createQuery("FROM Book b WHERE b.id=:id");
+        query.setParameter("id",id);
+        List<Book> bookList = query.list();
+        if(!bookList.isEmpty()){
             return bookList.get(0);
         }
         else{
@@ -195,48 +74,16 @@ public class BookRepository {
         }
     }
 
-    public List<Book> getAllByCategoryId(int categoryId) {
-        Connection connection=ConnectionRepository.getConnection();
-        List<Book> bookList=new LinkedList<>();
-
-        try {
-            String sql="SELECT b.id,b.title,b.author,b.category_id,c.name as categoryName " +
-                    " FROM book as b " +
-                    " inner join category as c on c.id=b.category_id " +
-                    " where b.visible=true and b.category_id=? order by b.id asc;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1,categoryId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-
-                Book book=new Book();
-                book.setId(resultSet.getInt("id"));
-                book.setTitle(resultSet.getString("title"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setCategoryId(resultSet.getInt("category_id"));
-                book.setCategoryName(resultSet.getString("categoryName"));
-                bookList.add(book);
-
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return bookList;
-
-    }
     public List<Book> getAllByCategoryIdSpring(int categoryId) {
         String sql="SELECT b.id,b.title,b.author,b.category_id,c.name as categoryName " +
                 " FROM book as b " +
                 " inner join category as c on c.id=b.category_id " +
                 " where b.visible=true and b.category_id=? order by b.id asc;";
-        List<Book> bookList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Book.class), categoryId);
+
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("From Book");
+
+        List<Book> bookList = query.list();
         return bookList;
     }
 }

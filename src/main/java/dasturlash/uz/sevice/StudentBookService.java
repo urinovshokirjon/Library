@@ -32,12 +32,14 @@ public class StudentBookService {
             return;
         }
         StudentBook studentBook=new StudentBook();
-        studentBook.setBookId(bId);
-        studentBook.setStudentId(profileId);
+        studentBook.setBook(book);
+        studentBook.setStudent(ComponentContainer.currentProfile);
         studentBook.setCreatedDate(LocalDateTime.now());
         studentBook.setStatus(StudentBookStatus.TAKEN);
         LocalDate deadlineDate=LocalDate.now().plusDays(book.getAvailableDay());
         studentBook.setDeadlineDate(deadlineDate);
+        studentBook.setCategory(book.getCategory());
+
         int result = studentBookRepository.saveSpring(studentBook);
         if (result==1){
             System.out.println("Book taken");
@@ -81,7 +83,7 @@ public class StudentBookService {
             String title=sk.getBook().getTitle();
             String author=sk.getBook().getAuthor();
 
-            String categoryName=sk.getBook().getCategoryName();
+            String categoryName=sk.getCategory().getName();
             LocalDateTime takenDate=sk.getCreatedDate();
 
 

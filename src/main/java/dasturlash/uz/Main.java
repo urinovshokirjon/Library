@@ -20,7 +20,7 @@ public class Main {
 
                                                 f
                                                         s
-                                                        af
+
         ApplicationContext context=new ClassPathXmlApplicationContext("spring-core.xml");
         MainController mainController = context.getBean("mainController", MainController.class);
         mainController.start();

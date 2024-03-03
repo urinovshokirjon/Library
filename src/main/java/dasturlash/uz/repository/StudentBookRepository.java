@@ -1,17 +1,15 @@
 package dasturlash.uz.repository;
 
+import dasturlash.uz.dto.BestStudentBook;
 import dasturlash.uz.dto.StudentBook;
 import dasturlash.uz.enums.StudentBookStatus;
-import dasturlash.uz.mappers.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
 import java.util.List;
 
 @Repository
@@ -78,17 +76,17 @@ public class StudentBookRepository {
         return studentBooks;
     }
 
-    public List<StudentBook> bestBooksSpring() {
+    public List<BestStudentBook> bestBooksSpring() {
         String sql = "Select b.id as bookId,b.title,b.author," +
                 " c.id as categoryId, c.name as categoryName, temp_t.taken_count" +
                 " from (select book_id,count(book_id) as taken_count from student_book " +
-                "        group by book_id order by taken_count desc limit 10) as temp_t" +
+                " group by book_id order by taken_count desc limit 10) as temp_t" +
                 " inner join book as b on b.id=temp_t.book_id" +
                 " inner join category as c on c.id=b.category_id" +
                 " order by taken_count desc";
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("From StudentBook ");
-        List<StudentBook> studentBooks = query.list();
+        Query<BestStudentBook> query = session.createQuery("Select new BestStudentBook (sb,co) count(sb.book.id) co from StudentBook as sb group by sb.book.id");
+        List<BestStudentBook> studentBooks = query.list();
         return studentBooks;
 
     }

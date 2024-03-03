@@ -1,10 +1,7 @@
 package dasturlash.uz.sevice;
 
 import dasturlash.uz.container.ComponentContainer;
-import dasturlash.uz.dto.Book;
-import dasturlash.uz.dto.Category;
-import dasturlash.uz.dto.Profile;
-import dasturlash.uz.dto.StudentBook;
+import dasturlash.uz.dto.*;
 import dasturlash.uz.enums.StudentBookStatus;
 import dasturlash.uz.repository.BookRepository;
 import dasturlash.uz.repository.StudentBookRepository;
@@ -132,10 +129,10 @@ public class StudentBookService {
 
     }
     public void bestBooks() {
-        List<StudentBook> studentBookList = studentBookRepository.bestBooksSpring();
-        for (StudentBook sk : studentBookList) {
-            Book book=sk.getBook();
-            Category category=sk.getCategory();
+        List<BestStudentBook> studentBookList = studentBookRepository.bestBooksSpring();
+        for (BestStudentBook sk : studentBookList) {
+            Book book=sk.getStudentBook().getBook();
+            Category category=sk.getStudentBook().getCategory();
             String str=String.format("%s,%s,%s,%s,%s",
                     book.getId(),book.getTitle(),book.getAuthor(),
                     category.getName(),sk.getTakenCount());

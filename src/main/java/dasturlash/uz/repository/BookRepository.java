@@ -1,19 +1,13 @@
 package dasturlash.uz.repository;
 
 import dasturlash.uz.dto.Book;
-import dasturlash.uz.dto.Category;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.LinkedList;
 import java.util.List;
 @Repository
 public class BookRepository {

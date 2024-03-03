@@ -1,20 +1,15 @@
 package dasturlash.uz.repository;
 
-
-import dasturlash.uz.mappers.ProfileMapper;
 import dasturlash.uz.dto.Profile;
 import dasturlash.uz.enums.ProfileRoles;
 import dasturlash.uz.enums.ProfileStatus;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
 import java.util.Arrays;
 import java.util.List;
 

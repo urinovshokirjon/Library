@@ -75,14 +75,9 @@ public class BookRepository {
     }
 
     public List<Book> getAllByCategoryIdSpring(int categoryId) {
-        String sql="SELECT b.id,b.title,b.author,b.category_id,c.name as categoryName " +
-                " FROM book as b " +
-                " inner join category as c on c.id=b.category_id " +
-                " where b.visible=true and b.category_id=? order by b.id asc;";
-
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("From Book");
-
+        Query query = session.createQuery("From Book b where b.category.id=:id");
+        query.setParameter("id",categoryId);
         List<Book> bookList = query.list();
         return bookList;
     }

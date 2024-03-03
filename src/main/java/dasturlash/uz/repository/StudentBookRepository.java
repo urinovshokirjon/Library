@@ -71,13 +71,9 @@ public class StudentBookRepository {
     }
 
     public List<StudentBook> bookHistorySpring(int bId) {
-        String sql = "select sb.created_date,sb.returned_date," +
-                " p.id as profileId,p.name as profileName,p.surname as profileSurname,p.phone" +
-                " from student_book as sb" +
-                " inner join profile as p on p.id=sb.student_id" +
-                " where sb.book_id=" + bId + " order by sb.created_date desc";
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("From StudentBook");
+        Query query = session.createQuery("From StudentBook sb where sb.book.id=:id ");
+        query.setParameter("id",bId);
         List<StudentBook> studentBooks = query.list();
         return studentBooks;
     }
@@ -91,7 +87,7 @@ public class StudentBookRepository {
                 " inner join category as c on c.id=b.category_id" +
                 " order by taken_count desc";
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("From StudentBook");
+        Query query = session.createQuery("From StudentBook ");
         List<StudentBook> studentBooks = query.list();
         return studentBooks;
 

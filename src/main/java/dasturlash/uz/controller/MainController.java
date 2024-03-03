@@ -12,6 +12,14 @@ public class MainController {
     private AuthService authServes;
     private CategoryService categoryService;
     private ScannerService scannerService;
+    @Autowired
+    public MainController( InitServes initServes, BookService bookService, AuthService authServes, CategoryService categoryService, ScannerService scannerService) {
+        this.initServes = initServes;
+        this.bookService = bookService;
+        this.authServes = authServes;
+        this.categoryService = categoryService;
+        this.scannerService = scannerService;
+    }
 
     public void start() {
         initServes.initAmin();
@@ -112,12 +120,5 @@ public class MainController {
         bookService.byCategoryId(categoryId);
     }
 
-    @Autowired
-    public MainController( InitServes initServes, BookService bookService, AuthService authServes, CategoryService categoryService, ScannerService scannerService) {
-        this.initServes = initServes;
-        this.bookService = bookService;
-        this.authServes = authServes;
-        this.categoryService = categoryService;
-        this.scannerService = scannerService;
-    }
+
 }

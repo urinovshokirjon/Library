@@ -69,9 +69,10 @@ public class CategoryRepository {
     public Category getByIdSpring(int id){
         // bu metod MB borib shunday id category bormi yo'qligini aniqlab bo'lsa olib keladi;
         // bu metod BookService classida ishlatiladi
-        String sql="from Category c  where c.id=" + id;
+        String sql="from Category c  where c.id=:id";
         Session session = sessionFactory.openSession();
         Query query = session.createQuery(sql);
+        query.setParameter("id",id);
         List<Category> categoryList = query.list();
         if (categoryList.size()>0){
             return categoryList.get(0);
